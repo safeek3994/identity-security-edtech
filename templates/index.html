@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow fade-up"><i class="bi bi-shield-lock me-2"></i>Cybersecurity Education Platform</p>
+    <h1 class="fade-up-delay-1">
+      Identity &amp;<br><span class="accent">Security Framework</span>
+    </h1>
+    <p class="fade-up-delay-2">
+      A hands-on demonstration of <strong style="color:#fff">Authentication</strong> and
+      <strong style="color:#fff">Authorization</strong> concepts built with Flask, Flask-Login,
+      and SQLite — designed for EdTech learners.
+    </p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap fade-up-delay-3">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}" class="btn-teal" style="width:auto;padding:0.65rem 2rem;">
+          <i class="bi bi-grid me-2"></i>Go to Dashboard
+        </a>
+      {% else %}
+        <a href="{{ url_for('signup') }}" class="btn-teal" style="width:auto;padding:0.65rem 2rem;">
+          <i class="bi bi-person-plus me-2"></i>Get Started
+        </a>
+        <a href="{{ url_for('login') }}" class="btn-outline-teal" style="padding:0.65rem 2rem;">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Concepts Grid -->
+<section class="pb-5">
+  <div class="container">
+    <p class="text-center mono mb-1" style="font-size:0.72rem;letter-spacing:2px;color:var(--teal);text-transform:uppercase;">Core Concepts Demonstrated</p>
+    <h2 class="text-center mb-2" style="color:#fff;font-size:1.7rem;">What You'll Learn</h2>
+    <p class="text-center mb-4" style="color:var(--text-muted);font-size:0.9rem;">Explore these fundamental security concepts through live, working code.</p>
+    <div class="concept-grid">
+
+      <div class="concept-card fade-up">
+        <span class="concept-icon">🔐</span>
+        <h5>Authentication</h5>
+        <p>Verify <em>who you are</em> using email + password. Passwords are hashed with <code>werkzeug.security</code> — never stored in plain text.</p>
+      </div>
+
+      <div class="concept-card fade-up-delay-1">
+        <span class="concept-icon">🛡️</span>
+        <h5>Authorization</h5>
+        <p>Control <em>what you can do</em>. Role-Based Access Control (RBAC) restricts the Admin Panel to admin users only.</p>
+      </div>
+
+      <div class="concept-card fade-up-delay-2">
+        <span class="concept-icon">🔑</span>
+        <h5>Session Management</h5>
+        <p>Flask-Login manages secure sessions after login. <code>@login_required</code> protects routes from unauthenticated access.</p>
+      </div>
+
+      <div class="concept-card fade-up-delay-3">
+        <span class="concept-icon">🗄️</span>
+        <h5>Secure Storage</h5>
+        <p>User credentials stored in SQLite via Flask-SQLAlchemy. Password hashes use PBKDF2-SHA256 — cracking them is computationally infeasible.</p>
+      </div>
+
+      <div class="concept-card fade-up">
+        <span class="concept-icon">🚫</span>
+        <h5>Access Control</h5>
+        <p>Unauthorized users attempting to access protected routes are redirected or shown an <em>Access Denied</em> response with HTTP 403.</p>
+      </div>
+
+      <div class="concept-card fade-up-delay-1">
+        <span class="concept-icon">⚡</span>
+        <h5>Input Validation</h5>
+        <p>Server-side validation for every form field. Duplicate email detection, password length checks, and match confirmation.</p>
+      </div>
+
+    </div>
+
+    <!-- Tech Stack Strip -->
+    <div class="mt-5 p-4 card-glass text-center">
+      <p class="mono mb-3" style="font-size:0.7rem;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;">Tech Stack</p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        {% for tech in ['Python 3', 'Flask', 'Flask-Login', 'Flask-SQLAlchemy', 'SQLite', 'Bootstrap 5', 'Werkzeug'] %}
+        <span class="badge-role badge-student" style="font-size:0.7rem;">{{ tech }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="mt-4 info-panel">
+      <h6><i class="bi bi-terminal me-2"></i>Quick Start — Default Admin Credentials</h6>
+      <ul>
+        <li>Email: <span style="color:#fff;">admin@edtech.com</span></li>
+        <li>Password: <span style="color:#fff;">Admin@1234</span></li>
+        <li>A default admin is created on first run if none exists</li>
+        <li>Register a new account with role = Student to explore RBAC</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

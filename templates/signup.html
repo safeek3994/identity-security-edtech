@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card fade-up">
+
+    <h1 class="auth-title">Create Account</h1>
+    <span class="auth-sub"><i class="bi bi-person-plus me-1"></i>Registration — Step 1 of Authentication</span>
+
+    <form method="POST" action="{{ url_for('signup') }}" novalidate>
+
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control"
+               placeholder="e.g. john_doe" required minlength="3"
+               value="{{ request.form.get('username', '') }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control"
+               placeholder="you@example.com" required
+               value="{{ request.form.get('email', '') }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" id="passwordField"
+               class="form-control" placeholder="Min. 6 characters" required>
+        <!-- Password Strength Meter -->
+        <div class="strength-bar">
+          <div class="strength-fill" id="strengthFill"></div>
+        </div>
+        <p class="strength-label text-muted-c" id="strengthLabel">Enter a password</p>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" name="confirm_password" id="confirmField"
+               class="form-control" placeholder="Repeat password" required>
+        <p class="strength-label" id="matchLabel" style="color:transparent;">•</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Role</label>
+        <select name="role" class="form-select">
+          <option value="student" {% if request.form.get('role') != 'admin' %}selected{% endif %}>
+            🎓 Student
+          </option>
+          <option value="admin" {% if request.form.get('role') == 'admin' %}selected{% endif %}>
+            🛡️ Admin
+          </option>
+        </select>
+        <p class="mt-1" style="font-size:0.75rem;color:var(--text-muted);">
+          <i class="bi bi-info-circle me-1"></i>
+          Admins can access the Admin Panel and view all users.
+        </p>
+      </div>
+
+      <button type="submit" class="btn-teal">
+        <i class="bi bi-person-check me-2"></i>Create Account
+      </button>
+
+      <hr class="divider">
+
+      <p class="text-center mb-0" style="font-size:0.88rem;color:var(--text-muted);">
+        Already have an account?
+        <a href="{{ url_for('login') }}" class="text-teal">Sign in here</a>
+      </p>
+    </form>
+
+    <!-- Security Note -->
+    <div class="info-panel mt-4">
+      <h6><i class="bi bi-shield me-2"></i>Security Concept</h6>
+      <ul>
+        <li>Your password is hashed before storage</li>
+        <li>Plain text is never saved to the database</li>
+        <li>Uses PBKDF2-SHA256 via Werkzeug</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const pwField  = document.getElementById('passwordField');
+  const fill     = document.getElementById('strengthFill');
+  const label    = document.getElementById('strengthLabel');
+  const cfm      = document.getElementById('confirmField');
+  const matchLbl = document.getElementById('matchLabel');
+
+  function getStrength(pw) {
+    let score = 0;
+    if (pw.length >= 6)  score++;
+    if (pw.length >= 10) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    return score;
+  }
+
+  pwField.addEventListener('input', () => {
+    const pw = pwField.value;
+    const s  = getStrength(pw);
+    const pct = pw.length === 0 ? 0 : Math.min(s * 20, 100);
+    fill.style.width = pct + '%';
+    const colors = ['','#ef4444','#f59e0b','#f59e0b','#10b981','#00d9c4'];
+    const labels = ['Enter a password','Weak','Fair','Good','Strong','Very Strong'];
+    fill.style.background = colors[s] || '#ef4444';
+    label.textContent = pw.length === 0 ? 'Enter a password' : labels[s] || 'Weak';
+    label.style.color = colors[s] || 'var(--text-muted)';
+    checkMatch();
+  });
+
+  function checkMatch() {
+    if (!cfm.value) { matchLbl.style.color = 'transparent'; return; }
+    const ok = pwField.value === cfm.value;
+    matchLbl.textContent = ok ? '✓ Passwords match' : '✗ Passwords do not match';
+    matchLbl.style.color = ok ? '#10b981' : '#ef4444';
+  }
+
+  cfm.addEventListener('input', checkMatch);
+</script>
+{% endblock %}

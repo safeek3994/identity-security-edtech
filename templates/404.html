@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ error_code | default(404) }} Error{% endblock %}
+
+{% block content %}
+<div class="error-page">
+  <div class="fade-up">
+    <p class="error-code">{{ error_code | default(404) }}</p>
+    <h2 style="color:#fff;margin-bottom:0.5rem;">
+      {% if error_code == 403 %}Authorization Failed
+      {% elif error_code == 500 %}Server Error
+      {% else %}Page Not Found
+      {% endif %}
+    </h2>
+    <p style="color:var(--text-muted);margin-bottom:2rem;max-width:400px;margin-left:auto;margin-right:auto;">
+      {% if error_msg %}{{ error_msg }}
+      {% elif error_code == 403 %}You don't have permission to access this resource.
+      {% elif error_code == 500 %}Something went wrong on our end. Please try again.
+      {% else %}The page you're looking for doesn't exist or has been moved.
+      {% endif %}
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{{ url_for('index') }}" class="btn-teal" style="width:auto;padding:0.6rem 1.8rem;">
+        <i class="bi bi-house me-2"></i>Go Home
+      </a>
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('dashboard') }}" class="btn-outline-teal">
+        <i class="bi bi-grid me-2"></i>Dashboard
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
